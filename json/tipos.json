@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "nome": "Alvarás",
+    "diasAntecedenciaPadrao": 45
+  },
+  {
+    "id": 2,
+    "nome": "Contrato de Fornecedores",
+    "diasAntecedenciaPadrao": 15
+  },
+  {
+    "id": 3,
+    "nome": "Autorização de Funcionamento Especial (AFE)",
+    "diasAntecedenciaPadrao": 5
+  },
+  {
+    "id": 4,
+    "nome": "Contrato de Prestadores de Serviço",
+    "diasAntecedenciaPadrao": 15
+  },
+  {
+    "id": 5,
+    "nome": "Certificado Digital PJ",
+    "diasAntecedenciaPadrao": 10
+  },
+  {
+    "id": 6,
+    "nome": "Certificado Digital PF",
+    "diasAntecedenciaPadrao": 10
+  },
+  {
+    "id": 7,
+    "nome": "Certidões",
+    "diasAntecedenciaPadrao": 30
+  }
+]
