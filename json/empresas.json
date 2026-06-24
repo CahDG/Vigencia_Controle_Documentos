@@ -1,0 +1,66 @@
+[
+  {
+    "id": 1,
+    "nome": "Camila Gomes S.A",
+    "cnpj": "97.811.196/0001-36",
+    "segmento": "Clínica",
+    "cidade": "Balneário Gaivota",
+    "uf": "SC"
+  },
+  {
+    "id": 2,
+    "nome": "Implantare Surgical LTDA",
+    "cnpj": "67.770.556/0001-38",
+    "segmento": "Distribuidora",
+    "cidade": "Serra do Navio",
+    "uf": "AP"
+  },
+  {
+    "id": 3,
+    "nome": "Conmed Tech Eireli",
+    "cnpj": "19.380.424/0001-57",
+    "segmento": "Hospital",
+    "cidade": "Normandia",
+    "uf": "RR"
+  },
+  {
+    "id": 4,
+    "nome": "FashHelp S.A",
+    "cnpj": "67.770.556/0001-31",
+    "segmento": "Outros",
+    "cidade": "Areia Branca",
+    "uf": "SE"
+  },
+  {
+    "id": 5,
+    "nome": "Hospital Santa Luzia",
+    "cnpj": "29.770.177/0001-59",
+    "segmento": "Hospital",
+    "cidade": "Brasília",
+    "uf": "DF"
+  },
+  {
+    "id": 6,
+    "nome": "Renovare",
+    "cnpj": "65.083.761/0001-08",
+    "segmento": "Clínica",
+    "cidade": "Arroio do Tigre",
+    "uf": "RS"
+  },
+  {
+    "id": 7,
+    "nome": "Imagens Sistemas LTDS",
+    "cnpj": "20.551.049/0001-40",
+    "segmento": "Outros",
+    "cidade": "Ji-Paraná",
+    "uf": "RO"
+  },
+  {
+    "id": 8,
+    "nome": "VAAAALOS",
+    "cnpj": "02.167.326/0001-31",
+    "segmento": "Clínica",
+    "cidade": "Apuí",
+    "uf": "AM"
+  }
+]
