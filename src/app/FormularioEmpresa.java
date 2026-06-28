@@ -29,8 +29,8 @@ public class FormularioEmpresa extends JDialog {
     private Empresa empresa;
 
     // CAMPOS DO FORMULARIO — LIMITES CONFORME DER LOGICO
-    private JTextField campoNome            = criarCampo(150); // RAZAO_SOCIAL: VARCHAR(150)
-    private JTextField campoCnpj            = criarCampo(18);  // CNPJ: CHAR(18)
+    private JTextField campoNome = criarCampo(150); // RAZAO_SOCIAL: VARCHAR(150)
+    private JTextField campoCnpj = criarCampoCnpj(); // CNPJ: CHAR(18) COM MASCARA AUTOMATICA
     private JComboBox<String> comboSegmento = new JComboBox<>(SEGMENTOS);
     private JComboBox<String> comboUF       = new JComboBox<>();
     private JComboBox<String> comboCidade   = new JComboBox<>();
@@ -221,7 +221,7 @@ public class FormularioEmpresa extends JDialog {
             mostrarErro("O CNPJ é obrigatório."); return;
         }
         if (!validarCnpj(campoCnpj.getText().trim())) {
-            mostrarErro("CNPJ inválido. Verifique o número digitado e use o formato: XX.XXX.XXX/XXXX-XX"); return;
+            mostrarErro("CNPJ inválido. Verifique o número digitado."); return;
         }
 
         // VERIFICA SE JA EXISTE OUTRA EMPRESA COM O MESMO CNPJ
@@ -289,6 +289,45 @@ public class FormularioEmpresa extends JDialog {
 
     private void mostrarErro(String mensagem) {
         JOptionPane.showMessageDialog(this, mensagem, "Atenção", JOptionPane.WARNING_MESSAGE);
+    }
+
+    // CRIA CAMPO CNPJ COM MASCARA AUTOMATICA XX.XXX.XXX/XXXX-XX
+    private static JTextField criarCampoCnpj() {
+        JTextField campo = new JTextField();
+        campo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        campo.setPreferredSize(new Dimension(400, 34));
+        campo.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 210, 225)),
+            BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
+
+        // MASCARA QUE FORMATA O CNPJ AUTOMATICAMENTE CONFORME O USUARIO DIGITA
+        campo.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            boolean atualizando = false;
+            public void insertUpdate(javax.swing.event.DocumentEvent e)  { formatar(); }
+            public void removeUpdate(javax.swing.event.DocumentEvent e)  {}
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {}
+            private void formatar() {
+                if (atualizando) return;
+                SwingUtilities.invokeLater(() -> {
+                    atualizando = true;
+                    // REMOVE TUDO QUE NAO FOR NUMERO
+                    String texto = campo.getText().replaceAll("[^0-9]", "");
+                    // LIMITA A 14 DIGITOS
+                    if (texto.length() > 14) texto = texto.substring(0, 14);
+                    // APLICA A MASCARA XX.XXX.XXX/XXXX-XX
+                    StringBuilder sb = new StringBuilder(texto);
+                    if (sb.length() > 2)  sb.insert(2, ".");
+                    if (sb.length() > 6)  sb.insert(6, ".");
+                    if (sb.length() > 10) sb.insert(10, "/");
+                    if (sb.length() > 15) sb.insert(15, "-");
+                    campo.setText(sb.toString());
+                    atualizando = false;
+                });
+            }
+        });
+
+        return campo;
     }
 
     // CRIA UM CAMPO DE TEXTO COM LIMITE DE CARACTERES CONFORME O DER LOGICO
