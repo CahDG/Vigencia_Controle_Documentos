@@ -11,11 +11,13 @@ Permite cadastrar empresas, tipos de documentos e acompanhar vencimentos com ale
 - Persistência em JSON — dados salvos localmente sem banco de dados externo
 
 ## Telas do Sistema
+```
 Dashboard = Visão geral com alertas e cards de resumo;
 Empresas = CRUD completo de empresas;
 Tipos de Documento = CRUD completo de tipos;
 Documentos = CRUD completo de documentos;
 Renovação = Formulário de renovação com histórico;
+```
 
 ## Estrutura do Projeto
 ```
