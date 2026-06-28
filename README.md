@@ -18,6 +18,7 @@ Documentos = CRUD completo de documentos;
 Renovação = Formulário de renovação com histórico;
 
 ## Estrutura do Projeto
+```
 src/
 ├── app/                  # Telas e formulários (Swing)
 │   ├── TelaPrincipal.java
@@ -44,14 +45,15 @@ src/
 ├── icons/                # Ícones da interface
 ├── dados/                # Dados do IBGE (estados e cidades)
 └── Main.java
-json/                     # Arquivos de persistência
+json/
 ├── empresas.json
 ├── documentos.json
 └── tipos.json
+```
 
 ## Requisitos
-JDK 25 — Eclipse Adoptium Temurin 25
-VS Code com a extensão Extension Pack for Java
+- JDK 25 — Eclipse Adoptium Temurin 25
+- VS Code com a extensão Extension Pack for Java
 
 ## Como Executar
 1. Clone o repositório
