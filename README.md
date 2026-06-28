@@ -4,22 +4,32 @@ Permite cadastrar empresas, tipos de documentos e acompanhar vencimentos com ale
 
 ## Funcionalidade
 - Dashboard com cards de resumo e alertas de documentos vencidos ou próximos do vencimento
-- Cadastro de empresas com validação matemática de CNPJ e seleção de cidade/UF via dados do IBGE
-- Validação de campos obrigatórios e limites de caracteres em todos os formulários
-- Validação matemática de CNPJ (verificação dos dígitos verificadores)
-- Código organizado em pacotes por responsabilidade e comentado em português
+- Cadastro de empresas com validação matemática de CNPJ (verificação dos dígitos verificadores)
+- Seleção de cidade/UF via dados oficiais do IBGE
 - Cadastro de tipos de documento com prazo de antecedência padrão configurável
 - Cadastro de documentos vinculados à empresa e tipo, com cálculo automático de status
-- Renovação de documentos com histórico completo de renovações
+- Renovação de documentos com histórico completo — documentos válidos não podem ser renovados
+- Validação de campos obrigatórios e limite de caracteres em todos os formulários, conforme modelagem
 - Persistência em JSON — dados salvos localmente sem banco de dados externo
+- Código organizado em pacotes por responsabilidade e comentado
+
+## Modelagem
+
+![DER Lógico](der_logico/DER_Logico.png)
+
+O sistema foi modelado com 4 entidades principais:
+- **Empresa** — dados cadastrais da organização de saúde
+- **Tipo_Documento** — categorias de documentos com prazo de antecedência padrão
+- **Documento** — documento vinculado a uma empresa e tipo, com datas e status automático
+- **Renovacoes** — histórico de renovações de cada documento
 
 ## Telas do Sistema
 ```
-Dashboard = Visão geral com alertas e cards de resumo;
-Empresas = CRUD completo de empresas;
-Tipos de Documento = CRUD completo de tipos;
-Documentos = CRUD completo de documentos;
-Renovação = Formulário de renovação com histórico;
+Dashboard — Visão geral com alertas e cards de resumo;
+Empresas — CRUD completo de empresas;
+Tipos de Documento — CRUD completo de tipos;
+Documentos — CRUD completo de documentos;
+Renovação — Formulário de renovação com histórico;
 ```
 
 ## Estrutura do Projeto
@@ -45,15 +55,30 @@ src/
 │   ├── DocumentoRepositorio.java
 │   └── TipoDocumentoRepositorio.java
 ├── util/                 # Utilitários
+│   ├── JsonUtil.java
 │   ├── StatusUtil.java
 │   └── LocalidadeUtil.java
 ├── icons/                # Ícones da interface
+│   ├── CardAVencer.png
+│   ├── CardDocumentos.png
+│   ├── CardEmpresas.png
+│   ├── CardVencidos.png
+│   ├── LogoVigencia.png
+│   ├── MenuDashboard.png
+│   ├── MenuDocumento.png
+│   ├── MenuEmpresa.png
+│   └── MenuTiposDocumentos.png
 ├── dados/                # Dados do IBGE (estados e cidades)
+│   ├── estados.json
+│   └── municipios.json
 └── Main.java
-json/
+der_logico/               # Modelagem do banco de dados
+└── DER_Logico.png
+json/                     # Arquivos de persistência
 ├── empresas.json
 ├── documentos.json
 └── tipos.json
+README.md
 ```
 
 ## Requisitos
