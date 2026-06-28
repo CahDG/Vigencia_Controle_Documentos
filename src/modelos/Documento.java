@@ -9,6 +9,7 @@ public class Documento {
     // ATRIBUTOS
     private int id;
     private String nome;
+    private String numDocumento;
     private int empresaId;
     private int tipoId;
     private LocalDate dataEmissao;
@@ -23,10 +24,12 @@ public class Documento {
     }
 
     // CONSTRUTOR COMPLETO
-    public Documento(int id, String nome, int empresaId, int tipoId, LocalDate dataEmissao, LocalDate dataVencimento,
+    public Documento(int id, String nome, String numDocumento, int empresaId, int tipoId,
+                     LocalDate dataEmissao, LocalDate dataVencimento,
                      int diasAntecedencia, String observacoes) {
         this.id = id;
         this.nome = nome;
+        this.numDocumento = numDocumento;
         this.empresaId = empresaId;
         this.tipoId = tipoId;
         this.dataEmissao = dataEmissao;
@@ -42,6 +45,9 @@ public class Documento {
 
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
+
+    public String getNumDocumento() { return numDocumento; }
+    public void setNumDocumento(String numDocumento) { this.numDocumento = numDocumento; }
 
     public int getEmpresaId() { return empresaId; }
     public void setEmpresaId(int empresaId) { this.empresaId = empresaId; }

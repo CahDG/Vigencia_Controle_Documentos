@@ -6,6 +6,10 @@ import util.LocalidadeUtil;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -24,9 +28,9 @@ public class FormularioEmpresa extends JDialog {
     private EmpresaRepositorio repositorio;
     private Empresa empresa;
 
-    // CAMPOS DO FORMULARIO
-    private JTextField campoNome            = criarCampo();
-    private JTextField campoCnpj            = criarCampo();
+    // CAMPOS DO FORMULARIO — LIMITES CONFORME DER LOGICO
+    private JTextField campoNome            = criarCampo(150); // RAZAO_SOCIAL: VARCHAR(150)
+    private JTextField campoCnpj            = criarCampo(18);  // CNPJ: CHAR(18)
     private JComboBox<String> comboSegmento = new JComboBox<>(SEGMENTOS);
     private JComboBox<String> comboUF       = new JComboBox<>();
     private JComboBox<String> comboCidade   = new JComboBox<>();
@@ -287,8 +291,8 @@ public class FormularioEmpresa extends JDialog {
         JOptionPane.showMessageDialog(this, mensagem, "Atenção", JOptionPane.WARNING_MESSAGE);
     }
 
-    // CRIA UM CAMPO DE TEXTO COM ESTILO PADRAO DO SISTEMA
-    private static JTextField criarCampo() {
+    // CRIA UM CAMPO DE TEXTO COM LIMITE DE CARACTERES CONFORME O DER LOGICO
+    private static JTextField criarCampo(int limite) {
         JTextField campo = new JTextField();
         campo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         campo.setPreferredSize(new Dimension(400, 34));
@@ -296,6 +300,23 @@ public class FormularioEmpresa extends JDialog {
             BorderFactory.createLineBorder(new Color(200, 210, 225)),
             BorderFactory.createEmptyBorder(5, 10, 5, 10)
         ));
+        // APLICA O FILTRO QUE IMPEDE DIGITAR ALEM DO LIMITE DEFINIDO NO DER
+        ((AbstractDocument) campo.getDocument()).setDocumentFilter(new DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
+                    throws BadLocationException {
+                if (string == null) return;
+                if (fb.getDocument().getLength() + string.length() <= limite)
+                    super.insertString(fb, offset, string, attr);
+            }
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
+                    throws BadLocationException {
+                if (text == null) return;
+                if (fb.getDocument().getLength() - length + text.length() <= limite)
+                    super.replace(fb, offset, length, text, attrs);
+            }
+        });
         return campo;
     }
 }

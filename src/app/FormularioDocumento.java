@@ -8,6 +8,10 @@ import repositorio.DocumentoRepositorio;
 
 import javax.swing.*;
 import javax.swing.table.*;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
@@ -30,11 +34,13 @@ public class FormularioDocumento extends JDialog {
     private List<Empresa> empresas;
     private List<TipoDocumento> tipos;
 
-    private JTextField campoNome          = criarCampo();
+    // CAMPOS DO FORMULARIO — LIMITES CONFORME DER LOGICO
+    private JTextField campoNome          = criarCampo(255);  // DESCRICAO: VARCHAR(255)
+    private JTextField campoNumDocumento  = criarCampo(100);  // NUM_DOCUMENTO: VARCHAR(100)
     private JTextField campoEmissao       = criarCampoData();
     private JTextField campoVencimento    = criarCampoData();
     private JSpinner   spinnerDias;
-    private JTextArea  campoObservacoes   = new JTextArea(6, 1);
+    private JTextArea  campoObservacoes   = criarAreaTexto(500); // OBSERVACAO: VARCHAR(500)
     private JCheckBox  checkSemVencimento = new JCheckBox("Sem vencimento");
     private JComboBox<String> comboEmpresa = new JComboBox<>();
     private JComboBox<String> comboTipo    = new JComboBox<>();
@@ -92,15 +98,6 @@ public class FormularioDocumento extends JDialog {
             if (checkSemVencimento.isSelected()) campoVencimento.setText("");
         });
 
-        // OBSERVACOES
-        campoObservacoes.setFont(new Font(FONTE, Font.PLAIN, 13));
-        campoObservacoes.setLineWrap(true);
-        campoObservacoes.setWrapStyleWord(true);
-        campoObservacoes.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(COR_BORDA),
-            BorderFactory.createEmptyBorder(6, 10, 6, 10)
-        ));
-
         // ===== PAINEL ESQUERDO =====
         JPanel esquerdo = new JPanel();
         esquerdo.setLayout(new BoxLayout(esquerdo, BoxLayout.Y_AXIS));
@@ -110,6 +107,10 @@ public class FormularioDocumento extends JDialog {
 
         // NOME
         adicionarCampo(esquerdo, "Nome *", campoNome);
+        esquerdo.add(Box.createVerticalStrut(12));
+
+        // NUMERO DO DOCUMENTO
+        adicionarCampo(esquerdo, "Número do Documento", campoNumDocumento);
         esquerdo.add(Box.createVerticalStrut(12));
 
         // EMPRESA
@@ -149,7 +150,7 @@ public class FormularioDocumento extends JDialog {
         esquerdo.add(linhaTipoDias);
         esquerdo.add(Box.createVerticalStrut(12));
 
-        // DATAS NA MESMA LINHA — USANDO BORDERLAYOUT PARA EVITAR INDENTACAO
+        // DATAS NA MESMA LINHA
         JPanel linhaDatas = new JPanel(new BorderLayout(12, 0));
         linhaDatas.setBackground(Color.WHITE);
         linhaDatas.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -195,7 +196,7 @@ public class FormularioDocumento extends JDialog {
         adicionarCampo(esquerdo, "Observações", campoObservacoes);
         campoObservacoes.setMaximumSize(new Dimension(Integer.MAX_VALUE, 130));
 
-        // ===== PAINEL DIREITO — SO HISTORICO =====
+        // PAINEL DIREITO — SO HISTORICO
         JPanel direito = new JPanel();
         direito.setLayout(new BoxLayout(direito, BoxLayout.Y_AXIS));
         direito.setBackground(COR_FUNDO_D);
@@ -340,6 +341,9 @@ public class FormularioDocumento extends JDialog {
     private void preencherCampos() {
         campoNome.setText(documento.getNome());
 
+        if (documento.getNumDocumento() != null)
+            campoNumDocumento.setText(documento.getNumDocumento());
+
         for (int i = 0; i < empresas.size(); i++) {
             if (empresas.get(i).getId() == documento.getEmpresaId()) {
                 comboEmpresa.setSelectedIndex(i + 1); break;
@@ -407,6 +411,7 @@ public class FormularioDocumento extends JDialog {
 
         if (documento == null) documento = new Documento();
         documento.setNome(campoNome.getText().trim());
+        documento.setNumDocumento(campoNumDocumento.getText().trim().isEmpty() ? null : campoNumDocumento.getText().trim());
         documento.setEmpresaId(empresas.get(comboEmpresa.getSelectedIndex() - 1).getId());
         documento.setTipoId(tipos.get(comboTipo.getSelectedIndex() - 1).getId());
         documento.setDataEmissao(dataEmissao);
@@ -435,7 +440,8 @@ public class FormularioDocumento extends JDialog {
         JOptionPane.showMessageDialog(this, mensagem, "Atenção", JOptionPane.WARNING_MESSAGE);
     }
 
-    private static JTextField criarCampo() {
+    // CRIA UM CAMPO DE TEXTO COM LIMITE DE CARACTERES CONFORME O DER LOGICO
+    private static JTextField criarCampo(int limite) {
         JTextField campo = new JTextField();
         campo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         campo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 34));
@@ -443,7 +449,54 @@ public class FormularioDocumento extends JDialog {
             BorderFactory.createLineBorder(new Color(200, 210, 225)),
             BorderFactory.createEmptyBorder(5, 10, 5, 10)
         ));
+        // APLICA O FILTRO QUE IMPEDE DIGITAR ALEM DO LIMITE DEFINIDO NO DER
+        ((AbstractDocument) campo.getDocument()).setDocumentFilter(new DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
+                    throws BadLocationException {
+                if (string == null) return;
+                if (fb.getDocument().getLength() + string.length() <= limite)
+                    super.insertString(fb, offset, string, attr);
+            }
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
+                    throws BadLocationException {
+                if (text == null) return;
+                if (fb.getDocument().getLength() - length + text.length() <= limite)
+                    super.replace(fb, offset, length, text, attrs);
+            }
+        });
         return campo;
+    }
+
+    // CRIA UMA AREA DE TEXTO COM LIMITE DE CARACTERES CONFORME O DER LOGICO
+    private static JTextArea criarAreaTexto(int limite) {
+        JTextArea area = new JTextArea(6, 1);
+        area.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        area.setLineWrap(true);
+        area.setWrapStyleWord(true);
+        area.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 210, 225)),
+            BorderFactory.createEmptyBorder(6, 10, 6, 10)
+        ));
+        // APLICA O FILTRO QUE IMPEDE DIGITAR ALEM DO LIMITE DEFINIDO NO DER
+        ((AbstractDocument) area.getDocument()).setDocumentFilter(new DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
+                    throws BadLocationException {
+                if (string == null) return;
+                if (fb.getDocument().getLength() + string.length() <= limite)
+                    super.insertString(fb, offset, string, attr);
+            }
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
+                    throws BadLocationException {
+                if (text == null) return;
+                if (fb.getDocument().getLength() - length + text.length() <= limite)
+                    super.replace(fb, offset, length, text, attrs);
+            }
+        });
+        return area;
     }
 
     private static JTextField criarCampoData() {

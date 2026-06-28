@@ -3,6 +3,7 @@ package app;
 import modelos.Documento;
 import modelos.Renovacao;
 import repositorio.DocumentoRepositorio;
+import util.StatusUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -113,6 +114,15 @@ public class FormularioRenovacao extends JDialog {
     }
 
     private void salvar() {
+        // BLOQUEIA RENOVACAO SE O DOCUMENTO AINDA ESTIVER VALIDO
+        if (documento.getVencimentoAtual() != null) {
+            String status = StatusUtil.calcularStatus(documento.getVencimentoAtual(), documento.getDiasAntecedencia());
+            if ("Válido".equals(status)) {
+                mostrarErro("Este documento ainda está válido e não pode ser renovado.\nA renovação só é permitida quando o status for 'A Vencer' ou 'Vencido'.");
+                return;
+            }
+        }
+
         // VALIDA DATA DA RENOVACAO
         LocalDate dataRenovacao;
         try {

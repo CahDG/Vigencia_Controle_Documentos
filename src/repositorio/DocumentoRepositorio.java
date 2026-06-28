@@ -18,6 +18,11 @@ public class DocumentoRepositorio {
             Documento d = new Documento();
             d.setId(Integer.parseInt(JsonUtil.extrairValor(obj, "id")));
             d.setNome(JsonUtil.extrairValor(obj, "nome"));
+
+            // NUM_DOCUMENTO E OPCIONAL — PODE NAO EXISTIR EM REGISTROS ANTIGOS
+            String numDoc = JsonUtil.extrairValor(obj, "numDocumento");
+            d.setNumDocumento(numDoc.isEmpty() ? null : numDoc);
+
             d.setEmpresaId(Integer.parseInt(JsonUtil.extrairValor(obj, "empresaId")));
             d.setTipoId(Integer.parseInt(JsonUtil.extrairValor(obj, "tipoId")));
             d.setDataEmissao(JsonUtil.stringParaDate(JsonUtil.extrairValor(obj, "dataEmissao")));
@@ -57,6 +62,10 @@ public class DocumentoRepositorio {
             json.append("  {\n");
             json.append("    \"id\": ").append(d.getId()).append(",\n");
             json.append("    \"nome\": \"").append(d.getNome()).append("\",\n");
+
+            // NUM_DOCUMENTO E OPCIONAL — SALVA VAZIO SE NULO
+            json.append("    \"numDocumento\": \"").append(d.getNumDocumento() != null ? d.getNumDocumento() : "").append("\",\n");
+
             json.append("    \"empresaId\": ").append(d.getEmpresaId()).append(",\n");
             json.append("    \"tipoId\": ").append(d.getTipoId()).append(",\n");
             json.append("    \"dataEmissao\": \"").append(JsonUtil.dateParaString(d.getDataEmissao())).append("\",\n");

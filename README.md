@@ -5,6 +5,9 @@ Permite cadastrar empresas, tipos de documentos e acompanhar vencimentos com ale
 ## Funcionalidade
 - Dashboard com cards de resumo e alertas de documentos vencidos ou próximos do vencimento
 - Cadastro de empresas com validação matemática de CNPJ e seleção de cidade/UF via dados do IBGE
+- Validação de campos obrigatórios e limites de caracteres em todos os formulários
+- Validação matemática de CNPJ (verificação dos dígitos verificadores)
+- Código organizado em pacotes por responsabilidade e comentado em português
 - Cadastro de tipos de documento com prazo de antecedência padrão configurável
 - Cadastro de documentos vinculados à empresa e tipo, com cálculo automático de status
 - Renovação de documentos com histórico completo de renovações
